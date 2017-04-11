@@ -1,10 +1,22 @@
+// set-up database movie_crud
+// knex (knexfile.js, knex.js, knex script)
+// create a .hbs page
+// create a route to render
+// migration to create the table
+// seed the table
+// include route file in app.js
+// query the db in the route and return all movies
+
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var knex = require('./db/connection')
 
 var index = require('./routes/index');
+var movies = require('./routes/movies');
 // var users = require('./routes/users');
 
 var app = express();
@@ -13,17 +25,15 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// uncomment after placing your favicon in /public
-// to put in "images" subfolder, you would do:
-// app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
-// __dirname is basically the equivalent of "pwd at the command line
+/* __dirname is basically the equivalent of "pwd" at the command line */
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+app.use('/', index)
+app.use('/movies', movies);
 // app.use('/users', users);
 
 // catch 404 and forward to error handler
@@ -33,7 +43,7 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
+// ======== ERROR HANDLER ========
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
