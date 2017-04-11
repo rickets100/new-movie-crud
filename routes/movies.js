@@ -4,6 +4,7 @@ var db = require('../db/connection');
 
 
 // ======== GET ALL MOVIES =========
+
 router.get('/', (req, res) => {
   db('movies').select('*')
     .then(function(movies) {
