@@ -2,51 +2,81 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db/connection');
 
-router.get('/', getAllMovies('movies'));
-
 // ======== GET ALL MOVIES ========
-function getAllMovies() {
-  return function(req, res, next) {
-    db('movies').select('*').then(movies => {
-      res.render('movies/index', {
-        movies: movies[0].title,
-        director: movies[0].director,
-        year: movies[0].year,
-        rating: movies[0].my_rating,
-        poster: movies[0].poster_url
-      })
-    })
-  }
-}
+router.get('/', function (req, res, next) {
+  db('movies').select('*')
+  .then(movies => {
+    res.render('movies/index', { movies })
+  })
+})
 
+// ========= GET FORMS PAGE ========
+// THIS NEEDS TO BE BEFORE GET ONE MOVIE
+router.get('/new', (req, res, next) => {
+  res.render('movies/new')
+})
 
 // ======== GET ONE MOVIE =========
-function getOneMovie() {
-  // router.get('/', function(req, res, next) {
-  //   db('movies').select('*').where('id', req.params.id) then(movies => {
-  //    res.render('movies/index', {
-  //    movies: movies[0].title,
-  //    director: movies[0].director,
-  //    year: movies[0].year,
-  //    rating: movies[0].my_rating,
-  //    poster: movies[0].poster_url
-  //     });
-  //   });
-  // });
-}
+router.get('/:id', function (req, res, next) {
+  selectedId = req.params.id;
+  db('movies').select('*')
+  .where('id', selectedId)
+  .first()
+  .then(movie => {
+    res.render('movies/show', { movie })
+  })
+  .catch(err => {
+    res.send(err);
+  })
+})
 
+// ======== ADD ONE MOVIE (PUT) ========
+router.post('/', function (req, res, next) {
+  var year = parseInt(req.body.year)
+  var movie = {
+    title: req.body.title,
+    director: req.body.director,
+    year: req.body.year,
+    my_rating: req.body['my-rating'],
+    poster_url: req.body['poster-url']
+  }
+  if (Number.isNaN(year) || year < 1878) {
+    res.render('movies/new', { error: 'Year is all fucked.', movie })
+  } else {
+    db('movies').insert(movie, '*').
+    then(newMovie => {
+      var id = newMovie[0].id
+      res.redirect(`/movies/${id}`)
+    })
+  }
+})
 
-// PUT /movies/
+// ======== ALTER ONE MOVIE ========
+router.put ('/movies/:id', function(req, res, next) {
+  var id = req.params.id
+  var movie = {
+    title: req.body.title,
+    director: req.body.director,
+    year: req.body.year,
+    my_rating: req.body['my-rating'],
+    poster_url: req.body['poster-url']
+  }
+  db('movies').update(movie, '*')
+  .where({ id })
+  .then(updatedMovie => {
+    var id = updatedMovie[0].id
+    res.redirect(`/movies/${id}`)
+  })
+})
 
-// PATCH /movies/:id
-
-// DELETE /movies/:id
-
-// ======== ADD ONE MOVIE =========
-// POST /movie
-
-// GET /movies/new
-
-// GET /movies/:id/edit
+// ======== DELETE ONE MOVIE ========
+router.delete('/:id', (req, res, next) => {
+  var id = req.params.id
+  db('movies').del()
+  .where({ id })
+  .then(() => {
+    res.redirect(`/movies`)
+  })
+})
 
 module.exports = router;
