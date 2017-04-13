@@ -15,10 +15,10 @@ var movies = require('./routes/movies')
 
 
 // ======== VIEW ENGINE SETUP ========
-hbs.registerPartials(__dirname + '/views/shared')
-hbs.registerPartials(__dirname + '/views/movies/shared')
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
+hbs.registerPartials(__dirname + '/views/shared')
+hbs.registerPartials(__dirname + '/views/movies/shared')
 
 // dirname is basically the equivalent of "pwd" at the command line
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

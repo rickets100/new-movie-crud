@@ -13,6 +13,7 @@ router.get('/', function (req, res, next) {
 // ========= GET FORMS PAGE ========
 // THIS NEEDS TO BE BEFORE GET ONE MOVIE
 router.get('/new', (req, res, next) => {
+  console.log('hey');
   res.render('movies/new')
 })
 
@@ -47,6 +48,9 @@ router.post('/', function (req, res, next) {
     then(newMovie => {
       var id = newMovie[0].id
       res.redirect(`/movies/${id}`)
+    })
+    .catch(err => {
+      console.log(err);
     })
   }
 })
