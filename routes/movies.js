@@ -41,7 +41,7 @@ router.post('/', function (req, res, next) {
     poster_url: req.body['poster-url']
   }
   if (Number.isNaN(year) || year < 1878) {
-    res.render('movies/new', { error: 'Year is all fucked.', movie })
+    res.render('movies/new', { error: 'Try again', movie })
   } else {
     db('movies').insert(movie, '*').
     then(newMovie => {
