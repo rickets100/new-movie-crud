@@ -41,15 +41,20 @@ router.post('/', function (req, res, next) {
     my_rating: req.body['my-rating'],
     poster_url: req.body['poster-url']
   }
-  if (Number.isNaN(year) || year < 1878) {
-    res.render('movies/new', { error: 'Try again', movie })
-  } else {
+  if (Number.isNaN(year) || year < 1878 || year > 2018) {
+    res.render('movies/new', { error: 'Invalid year.', movie })
+  }
+  if (Number.isNaN(my_rating)) {
+    res.render('movies/new', { error: 'Rating needs to be a number.', movie })
+  }
+  else {
     db('movies').insert(movie, '*').
     then(newMovie => {
       var id = newMovie[0].id
       res.redirect(`/movies/${id}`)
     })
     .catch(err => {
+      next(err);
       console.log(err);
     })
   }
