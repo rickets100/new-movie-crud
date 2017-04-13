@@ -1,36 +1,32 @@
-// set-up database movie_crud
-// knex (knexfile.js, knex.js, knex script)
-// create a .hbs page
-// create a route to render
-// migration to create the table
-// seed the table
-// include route file in app.js
-// query the db in the route and return all movies
-
-
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+var express = require('express')
+var path = require('path')
+var favicon = require('serve-favicon')
+var logger = require('morgan')
+var bodyParser = require('body-parser')
 var knex = require('./db/connection')
-
-var index = require('./routes/index');
-var movies = require('./routes/movies');
-// var users = require('./routes/users');
-
+var dotenv = require('dotenv').config()
+var methodOverride = require('method-override')
+var hbs = require('hbs');
 var app = express();
 
-// ======== VIEW ENGINE SETUP ========
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+// ======== PATHS & SUCH =========
+var index = require('./routes/index')
+var movies = require('./routes/movies')
 
-/* __dirname is basically the equivalent of "pwd" at the command line */
+
+// ======== VIEW ENGINE SETUP ========
+hbs.registerPartials(__dirname + '/views/shared')
+hbs.registerPartials(__dirname + '/views/movies/shared')
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hbs')
+
+// dirname is basically the equivalent of "pwd" at the command line
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method'))
 
 app.use('/', index)
 app.use('/movies', movies);

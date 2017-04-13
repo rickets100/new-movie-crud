@@ -7,7 +7,7 @@ var debug = require('debug')('movie-crud:server');
 var http = require('http');
 
 // = GET PORT FROM ENVIRONMENT & STORE IN EXPRESS =
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3009');
 app.set('port', port);
 
 
